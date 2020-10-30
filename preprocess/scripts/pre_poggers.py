@@ -109,6 +109,21 @@ def preprocess_zeta(source_dir, output_dir, include_path, metadata_filename):
         cuts = process_cuts(cut_path)
         if not pt.exists(big_wav_path):
             subprocess.run(["ffmpeg", "-i", ap, big_wav_path])
+            subprocess.run(
+                [
+                    "sox",
+                    big_wav_path,
+                    "-b",
+                    "16",
+                    "tmp.wav",
+                    "rate",
+                    "22050",
+                    "channels",
+                    "1",
+                ]
+            )
+            os.remove(big_wav_path)
+            os.rename("tmp.wav", big_wav_path)
 
         print(sub_path)
         for (line, start, end) in gen_subs(sub_path):
@@ -126,16 +141,10 @@ def preprocess_zeta(source_dir, output_dir, include_path, metadata_filename):
                     [
                         "sox",
                         big_wav_path,
-                        "-b",
-                        "16",
                         p,
                         "trim",
                         str(start / 1000),
                         "=" + str(end / 1000),
-                        "rate",
-                        "22050",
-                        "channels",
-                        "1",
                         "silence",
                         "1",
                         "0.1",
