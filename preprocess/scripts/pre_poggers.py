@@ -10,7 +10,7 @@ from os import path as pt
 
 from pydub import AudioSegment
 
-AUDIO_EXTS = [".opus", ".webm"]
+AUDIO_EXTS = [".opus", ".webm", ".mp3"]
 SUBTITLE_EXT = ".srt"  # Do not change
 IGNORE_EXT = ".cut.txt"  # Do not change
 

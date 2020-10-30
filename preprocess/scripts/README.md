@@ -31,7 +31,10 @@ hh:mm:ss.ms -> end
 
 with "start" and "end" being special keywords for convenience.
 
-NOTE: the ms section can be excluded if not needed.
+**Note:**
+
+- the .ms section can be excluded for convenience
+- default valid audio filetypes are `.opus`, `.webm`, `.mp3`
 
 #### Example:
 
