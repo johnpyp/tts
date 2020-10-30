@@ -1,12 +1,14 @@
-## Pre Poggers (preprocessing script)
+# Preprocessing Scripts
 
-Requirements:
+### pre_poggers.py
+
+#### Requirements:
 
 - Python 3.7 recommended
 
-pip install -r requirements.txt
+`pip install -r requirements.txt`
 
-Usage:
+#### Usage:
 
 Create a source directory with media in the format:
 
@@ -31,7 +33,7 @@ with "start" and "end" being special keywords for convenience.
 
 NOTE: the ms section can be excluded if not needed.
 
-#### Example
+#### Example:
 
 This represents segment of the audio file to not include in the final sample,
 for example if you have a 30m audio file this .cut.txt would exclude the first 5 minutes and the last 5 minutes:
