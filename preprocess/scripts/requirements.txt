@@ -1,0 +1,10 @@
+numpy
+pydub
+webvtt-py
+numba
+scipy
+
+# Other needed deps:
+# ffmpeg
+# sox
+# maybe others?
