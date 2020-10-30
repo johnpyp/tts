@@ -137,6 +137,7 @@ def preprocess_zeta(source_dir, output_dir, include_path, metadata_filename):
                 if "[" in line and "]" in line:
                     continue
                 p = pt.join(wavs_dir, stripped_apb + "_" + str(idx) + ".wav")
+                print(p)
                 subprocess.run(
                     [
                         "sox",
@@ -163,7 +164,9 @@ def preprocess_zeta(source_dir, output_dir, include_path, metadata_filename):
                 if len(sound) < 2000:
                     os.remove(p)
                     continue
-                rows.append([p if include_path else stripped_apb, line, line])
+                rows.append(
+                    [p if include_path else pt.splitext(pt.basename(p))[0], line, line]
+                )
                 idx += 1
                 print("Finished " + p)
     with open(metadata_csv_path, "w", newline="") as csvfile:
