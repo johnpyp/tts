@@ -178,8 +178,8 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--source_dir", default="source", type=str, help="Source dir")
-    parser.add_argument("--output_dir", default="output", type=str, help="Output dir")
+    parser.add_argument("source_dir", type=str, help="Source dir")
+    parser.add_argument("output_dir", type=str, help="Output dir")
     parser.add_argument(
         "--include_path",
         default=False,
