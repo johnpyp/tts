@@ -2,25 +2,18 @@ import csv
 import os
 import shutil
 import subprocess
-import webvtt
-import srt
 from datetime import timedelta
 from glob import glob
 from os import path as pt
 
+import srt
+import webvtt
+import utils
 from pydub import AudioSegment
 
 AUDIO_EXTS = [".opus", ".webm", ".mp3"]
 SUBTITLE_EXT = ".srt"  # Do not change
 IGNORE_EXT = ".cut.txt"  # Do not change
-
-
-def string_to_ms(string):
-    ftr = [3600000, 60000, 1000, 1]
-    ms = sum(
-        [a * b for a, b in zip(ftr, map(int, string.replace(".", ":").split(":")))]
-    )
-    return ms
 
 
 def process_cuts(cuts_path):
@@ -33,8 +26,8 @@ def process_cuts(cuts_path):
         start, end = line.split("->")
         start = start.strip()
         end = end.strip()
-        start = 0 if start == "start" else string_to_ms(start)
-        end = 100000000 if end == "end" else string_to_ms(end)
+        start = 0 if start == "start" else utils.string_to_ms(start)
+        end = 100000000 if end == "end" else utils.string_to_ms(end)
         res.append([start, end])
     return res
 
@@ -67,19 +60,6 @@ def gen_subs(subtitle_path):
         build_end = end
 
 
-def create_dirs(*dir_paths):
-    for dir_path in dir_paths:
-        if not os.path.exists(dir_path):
-            os.makedirs(dir_path)
-
-
-def strip_audio(string):
-    for ext in AUDIO_EXTS:
-        if string.endswith(ext):
-            return string.rstrip(ext)
-    raise Exception("Bad file extension: " + ext)
-
-
 def preprocess_zeta(source_dir, output_dir, include_path, metadata_filename):
     source_dir = pt.normpath(source_dir)
     output_dir = pt.normpath(output_dir)
@@ -89,15 +69,15 @@ def preprocess_zeta(source_dir, output_dir, include_path, metadata_filename):
 
     if os.path.exists(output_dir):
         shutil.rmtree(output_dir)
-    create_dirs(source_dir, output_dir, wavs_dir)
+    utils.create_dirs(source_dir, output_dir, wavs_dir)
     audio_paths = []
     for ext in AUDIO_EXTS:
         audio_paths.extend(glob(pt.join(source_dir, "*" + ext)))
     rows = []
     for ap in audio_paths:
         apb = pt.basename(ap)
-        stripped = strip_audio(ap)
-        stripped_apb = strip_audio(apb)
+        stripped = utils.strip_audio_ext(ap)
+        stripped_apb = utils.strip_audio_ext(apb)
         big_wav_path = stripped + ".wav"
 
         sub_path = stripped + SUBTITLE_EXT
@@ -137,7 +117,6 @@ def preprocess_zeta(source_dir, output_dir, include_path, metadata_filename):
                 if "[" in line and "]" in line:
                     continue
                 p = pt.join(wavs_dir, stripped_apb + "_" + str(idx) + ".wav")
-                print(p)
                 subprocess.run(
                     [
                         "sox",
