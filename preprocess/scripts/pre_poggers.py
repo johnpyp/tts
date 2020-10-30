@@ -45,16 +45,10 @@ def gen_subs(subtitle_path):
     with open(subtitle_path) as f:
         raw = f.read()
     subs = srt.parse(raw)
-    dedup = ""
     build_line = ""
     build_start = 0
     build_end = 0
-    # for sub in webvtt.read(subtitle_path):
     for sub in subs:
-        # for line in sub.text.split("\n"):
-        #     if line == dedup or line == "" or line == " ":
-        #         continue
-        #     dedup = line
 
         ms1 = timedelta(milliseconds=1)
         start, end = sub.start / ms1, sub.end / ms1
@@ -86,12 +80,12 @@ def strip_audio(string):
     raise Exception("Bad file extension: " + ext)
 
 
-def preprocess_zeta(source_dir, output_dir):
+def preprocess_zeta(source_dir, output_dir, include_path, metadata_filename):
     source_dir = pt.normpath(source_dir)
     output_dir = pt.normpath(output_dir)
 
     wavs_dir = pt.join(output_dir, "wavs")
-    metadata_csv_path = pt.join(output_dir, "metadata.csv")
+    metadata_csv_path = pt.join(output_dir, metadata_filename)
 
     if os.path.exists(output_dir):
         shutil.rmtree(output_dir)
@@ -112,16 +106,12 @@ def preprocess_zeta(source_dir, output_dir):
         if not pt.exists(sub_path):
             continue
         idx = 1
-        # audio = AudioSegment.from_file(ap)
         cuts = process_cuts(cut_path)
         if not pt.exists(big_wav_path):
             subprocess.run(["ffmpeg", "-i", ap, big_wav_path])
 
         print(sub_path)
         for (line, start, end) in gen_subs(sub_path):
-            # print(
-            #     f"{str(timedelta(milliseconds=start))} --> {str(timedelta(milliseconds=end))}: '{line}'"
-            # )
             in_cut = False
             for (cut_start, cut_end) in cuts:
                 if cut_start < end < cut_end or cut_start < start < cut_end:
@@ -132,7 +122,6 @@ def preprocess_zeta(source_dir, output_dir):
                 if "[" in line and "]" in line:
                     continue
                 p = pt.join(wavs_dir, stripped_apb + "_" + str(idx) + ".wav")
-                # sound = audio[start:end]
                 subprocess.run(
                     [
                         "sox",
@@ -159,34 +148,13 @@ def preprocess_zeta(source_dir, output_dir):
                         "reverse",
                     ]
                 )
-                # assert len(sound) > 0
-                # sound = sound.set_channels(1).set_frame_rate(22050).set_sample_width(2)
-                # sound.export(p, format="wav")
-                # subprocess.run(
-                #     [
-                #         "sox",
-                #         p,
-                #         "tmp.wav",
-                #         "silence",
-                #         "1",
-                #         "0.1",
-                #         "0.5%",
-                #         "reverse",
-                #         "silence",
-                #         "1",
-                #         "0.1",
-                #         "0.5%",
-                #         "reverse",
-                #     ]
-                # )
-                # os.rename("tmp.wav", p)
                 if not pt.exists(p):
                     raise Exception("Clip wasn't made??")
                 sound = AudioSegment.from_file(p)
                 if len(sound) < 2000:
                     os.remove(p)
                     continue
-                rows.append([p, line, line])
+                rows.append([p if include_path else stripped_apb, line, line])
                 idx += 1
                 print("Finished " + p)
     with open(metadata_csv_path, "w", newline="") as csvfile:
@@ -200,5 +168,19 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--source_dir", default="source", type=str, help="Source dir")
     parser.add_argument("--output_dir", default="output", type=str, help="Output dir")
+    parser.add_argument(
+        "--include_path",
+        default=False,
+        type=bool,
+        help="Include relative path in the metadata.csv (non-standard), rather than just filename",
+    )
+    parser.add_argument(
+        "--metadata_filename",
+        default="metadata.csv",
+        type=str,
+        help="The filename of the metadata csv file",
+    )
     args = parser.parse_args()
-    preprocess_zeta(args.source_dir, args.output_dir)
+    preprocess_zeta(
+        args.source_dir, args.output_dir, args.include_path, args.metadata_filename
+    )
