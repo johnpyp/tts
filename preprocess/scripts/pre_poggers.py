@@ -1,6 +1,5 @@
 import csv
 import os
-import shutil
 import subprocess
 from datetime import timedelta
 from glob import glob
@@ -67,9 +66,8 @@ def preprocess_zeta(source_dir, output_dir, include_path, metadata_filename):
     wavs_dir = pt.join(output_dir, "wavs")
     metadata_csv_path = pt.join(output_dir, metadata_filename)
 
-    if os.path.exists(output_dir):
-        shutil.rmtree(output_dir)
-    utils.create_dirs(source_dir, output_dir, wavs_dir)
+    utils.safe_remove(output_dir)
+    utils.ensure_dirs(source_dir, output_dir, wavs_dir)
     audio_paths = []
     for ext in AUDIO_EXTS:
         audio_paths.extend(glob(pt.join(source_dir, "*" + ext)))
@@ -102,7 +100,7 @@ def preprocess_zeta(source_dir, output_dir, include_path, metadata_filename):
                     "1",
                 ]
             )
-            os.remove(big_wav_path)
+            utils.safe_remove(big_wav_path)
             os.rename("tmp.wav", big_wav_path)
 
         print(sub_path)
@@ -141,13 +139,14 @@ def preprocess_zeta(source_dir, output_dir, include_path, metadata_filename):
                     raise Exception("Clip wasn't made??")
                 sound = AudioSegment.from_file(p)
                 if len(sound) < 2000:
-                    os.remove(p)
+                    utils.safe_remove(p)
                     continue
                 rows.append(
                     [p if include_path else pt.splitext(pt.basename(p))[0], line, line]
                 )
                 idx += 1
                 print("Finished " + p)
+            utils.safe_remove(big_wav_path)
     with open(metadata_csv_path, "w", newline="") as csvfile:
         writer = csv.writer(csvfile, delimiter="|", quoting=csv.QUOTE_MINIMAL)
         writer.writerows(rows)

@@ -2,18 +2,15 @@ from os import path as pt
 import random
 import math
 import os
-
-
-def ensure_dirs(*dir_paths):
-    for dir_path in dir_paths:
-        if not os.path.exists(dir_path):
-            os.makedirs(dir_path)
+import utils
 
 
 def data_split(
     dataset_dir, train_percent, valid_percent, filelists_dir, train_file, valid_file
 ):
-    ensure_dirs(filelists_dir)
+    if not pt.exists(dataset_dir):
+        print(f"Error: Dataset directory '{dataset_dir}' does not exist.")
+    utils.ensure_dirs(filelists_dir)
     dataset_file = pt.join(dataset_dir, "metadata.csv")
     wavs_dir = pt.join(dataset_dir, "wavs")
     train_filepath = pt.join(filelists_dir, train_file)
@@ -37,7 +34,7 @@ def data_split(
         for _i in range(fraction):
             rand_data_ind = random.randint(0, len(data) - 1)
             file, text = data[rand_data_ind].split("|")[:2]
-            file = pt.splitext(pt.basename(file))[0]
+            file = utils.strip(pt.basename(file), ".wav")
             l = pt.join(wavs_dir, file + ".wav") + "|" + text.strip() + "\n"
             split_data[split_ind].append(l)
             data.pop(rand_data_ind)
