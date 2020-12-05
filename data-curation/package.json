@@ -1,0 +1,23 @@
+{
+  "name": "data-curation",
+  "version": "0.0.1",
+  "description": "A web app for audio dataset curation and crowdsourced manual transcription fixing",
+  "repository": "https://github.com/johnpyp/tts",
+  "author": "johnpyp",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/eslint-parser": "^7.12.1",
+    "@babel/parser": "^7.12.3",
+    "@typescript-eslint/eslint-plugin": "^4.6.1",
+    "@typescript-eslint/parser": "^4.6.1",
+    "eslint": "^7.12.1",
+    "eslint-config-alloy": "^3.8.2",
+    "eslint-plugin-vue": "^7.1.0",
+    "prettier": "^2.1.2",
+    "tsc-watch": "^4.2.9",
+    "typescript": "^4.0.5",
+    "vue-eslint-parser": "^7.1.1"
+  },
+  "dependencies": {}
+}

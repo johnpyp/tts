@@ -1,0 +1,27 @@
+{
+  "name": "server",
+  "version": "0.0.1",
+  "description": "API Server for data curation web",
+  "repository": "https://github.com/johnpyp/tts",
+  "author": "johnpyp",
+  "license": "MIT",
+  "scripts": {
+    "start": "tsc-watch --onSuccess \"yarn start:prod\"",
+    "start:prod": "cd .. && node server/dist/index.js"
+  },
+  "dependencies": {
+    "convict": "^6.0.0",
+    "express": "^4.17.1",
+    "fs-extra": "^9.0.1",
+    "knex": "^0.21.12",
+    "lodash": "^4.17.20",
+    "loglevel": "^1.7.0",
+    "sqlite3": "^5.0.0",
+    "tslog": "^2.10.0",
+    "typeorm": "^0.2.29"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.2",
+    "@types/lodash": "^4.14.164"
+  }
+}

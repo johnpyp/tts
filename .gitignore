@@ -8,3 +8,4 @@
 preprocess/*
 !preprocess/scripts/
 
+!data-curation

@@ -1,0 +1,13 @@
+- Full Datasets
+  - Import "dataset" complete (LJSpeech) uploaded via zip, or imported from datadir and synced
+  - 'Dataset state'
+    - States: 'unknown' | 'wip' | 'ready'
+      - Filterable
+    - Default state of 'unknkown'
+    - Can be edited at any time
+  - Labels/names
+  - "Import" from data dir, but only ones displayed are ones synced in the DB.
+    - Sonarr-esque
+  - Manifest viewing to view the manifest file in a digestable table.
+  - Metadata viewing, showing min, max, avg, etc. clip information, and a table of all the clips with basic metadata.
+    - Synced to database, probably expensive to compute, refreshed
